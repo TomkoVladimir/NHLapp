@@ -1,6 +1,5 @@
 package com.playground.example.learning.repository;
 
-import com.playground.example.learning.entity.Player;
 import com.playground.example.learning.entity.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 
