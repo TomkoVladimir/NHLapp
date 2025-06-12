@@ -1,0 +1,62 @@
+package com.playground.example.learning.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "matches")
+public class Match
+{
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
+
+    @Column(name = "match_date", nullable = false)
+    private String matchDate;
+
+    @ManyToOne
+    @JoinColumn(name = "ht_player_nickname", nullable = false)
+    private Player htPlayerNickName;
+
+    @ManyToOne
+    @JoinColumn(name = "at_player_nickname", nullable = false)
+    private Player atPlayerNickName;
+
+    @ManyToOne
+    @JoinColumn(name = "home_team", nullable = false)
+    private Team homeTeam;
+
+    @ManyToOne
+    @JoinColumn(name = "away_team", nullable = false)
+    private Team awayTeam;
+
+    @Column(name = "ht_score")
+    private Integer htScore;
+
+    @Column(name = "at_score")
+    private Integer atScore;
+
+    @Column(name = "over_time")
+    private Boolean overTime;
+
+    @Column(name = "ht_points")
+    private Integer htPoints;
+
+    @Column(name = "at_points")
+    private Integer atPoints;
+
+    @ManyToOne
+    @JoinColumn(name = "series_id")
+    private Series series;
+
+    @Column
+    private Boolean isFinished;
+}
+

@@ -1,0 +1,46 @@
+package com.playground.example.learning.controller;
+
+import com.playground.example.learning.dto.MatchDto.MatchRequestDto;
+import com.playground.example.learning.dto.MatchDto.MatchResponseDto;
+import com.playground.example.learning.service.MatchesService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/matches")
+@AllArgsConstructor
+public class MatchController
+{
+    private final MatchesService matchesService;
+
+    @PostMapping
+    public ResponseEntity<MatchResponseDto> createMatch(@RequestBody MatchRequestDto matchRequestDto)
+    {
+        MatchResponseDto response = matchesService.createStandaloneMatch(matchRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping("/{matchId}/finish")
+    public ResponseEntity<MatchResponseDto> finishMatch(
+        @PathVariable("matchId") Long matchId,
+        @RequestParam("htScore") int htScore,
+        @RequestParam("atScore") int atScore,
+        @RequestParam("overTime") boolean overTime
+    )
+    {
+        MatchResponseDto response = matchesService.finishMatch(matchId, htScore, atScore, overTime);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MatchResponseDto>> getAllMatches()
+    {
+        List<MatchResponseDto> matches = matchesService.getAllMatches();
+        return ResponseEntity.ok(matches);
+    }
+}
