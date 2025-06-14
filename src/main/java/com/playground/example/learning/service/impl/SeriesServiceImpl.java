@@ -2,18 +2,13 @@ package com.playground.example.learning.service.impl;
 
 import com.playground.example.learning.dto.SeriesDto.SeriesRequestDto;
 import com.playground.example.learning.dto.SeriesDto.SeriesResponseDto;
-import com.playground.example.learning.entity.Match;
-import com.playground.example.learning.entity.Player;
-import com.playground.example.learning.entity.Series;
-import com.playground.example.learning.entity.Team;
+import com.playground.example.learning.entity.*;
 import com.playground.example.learning.exception.ResourceNotFoundException;
 import com.playground.example.learning.mapper.SeriesMapper;
-import com.playground.example.learning.repository.MatchRepository;
-import com.playground.example.learning.repository.PlayerRepository;
-import com.playground.example.learning.repository.SeriesRepository;
-import com.playground.example.learning.repository.TeamRepository;
+import com.playground.example.learning.repository.*;
 import com.playground.example.learning.service.SeriesService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,6 +24,8 @@ public class SeriesServiceImpl implements SeriesService
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
     private final MatchServiceImpl matchService;
+    private final PlayoffServiceImpl playoffService;
+    private final PlayoffRepository playoffRepository;
 
     @Override
     public SeriesResponseDto createSeries(SeriesRequestDto dto)
@@ -57,17 +54,7 @@ public class SeriesServiceImpl implements SeriesService
         seriesRepository.save(series);
 
         // Create initial 4 matches (2 home for each player)
-        List<Match> matches = new ArrayList<>();
-
-        // Game 1 & 2: playerOne home
-        matches.add(matchService.createSeriesMatch(playerOne, playerTwo, teamOne, teamTwo, series));
-        matches.add(matchService.createSeriesMatch(playerOne, playerTwo, teamOne, teamTwo, series));
-
-        // Game 3 & 4: playerTwo home
-        matches.add(matchService.createSeriesMatch(playerTwo, playerOne, teamTwo, teamOne, series));
-        matches.add(matchService.createSeriesMatch(playerTwo, playerOne, teamTwo, teamOne, series));
-
-        matchRepository.saveAll(matches);
+        List<Match> matches = generateInitialMatchesForSeries(series);
 
         // Return response
         List<Long> matchIds = matches.stream().map(Match::getId).collect(Collectors.toList());
@@ -83,6 +70,24 @@ public class SeriesServiceImpl implements SeriesService
                     matchIds, // Optional playoff ID
                     series.isCompleted()
                 );
+    }
+
+    public List<Match> generateInitialMatchesForSeries(Series series) {
+        Player p1 = series.getPlayerOne();
+        Player p2 = series.getPlayerTwo();
+        Team t1 = series.getTeamOne();
+        Team t2 = series.getTeamTwo();
+
+        List<Match> matches = new ArrayList<>();
+        // Game 1 & 2: p1 home
+        matches.add(matchService.createSeriesMatch(p1, p2, t1, t2, series));
+        matches.add(matchService.createSeriesMatch(p1, p2, t1, t2, series));
+        // Game 3 & 4: p2 home
+        matches.add(matchService.createSeriesMatch(p2, p1, t2, t1, series));
+        matches.add(matchService.createSeriesMatch(p2, p1, t2, t1, series));
+
+        matchRepository.saveAll(matches);
+        return matches;
     }
 
     public void updateSeriesAfterMatch(Match match)
@@ -117,8 +122,6 @@ public class SeriesServiceImpl implements SeriesService
             } else {
                 series.setWinner(series.getPlayerTwo());
             }
-            seriesRepository.save(series);
-            return;
         }
 
         // Count current matches
@@ -126,28 +129,59 @@ public class SeriesServiceImpl implements SeriesService
         if (totalMatches >= 7) return; // Defensive check, though it shouldn't reach here
 
         // Schedule next match in the series
-        if(series.getPlayerOneWins() == series.getPlayerTwoWins()){
+        if(series.getPlayerOneWins() == 1 && series.getPlayerTwoWins() == 1){
             Match nextMatch = createNextSeriesMatch(series, totalMatches + 1);
             matchRepository.save(nextMatch);
         }
-        if((series.getPlayerOneWins() != 0 && series.getPlayerTwoWins() != 0) && (series.getPlayerOneWins() + series.getPlayerTwoWins() == 3 ))
+        if((series.getPlayerOneWins() != 0 && series.getPlayerTwoWins() != 0) &&
+           (series.getPlayerOneWins() + series.getPlayerTwoWins() == 3 ) &&
+           totalMatches < 5)
         {
             Match nextMatch = createNextSeriesMatch(series, totalMatches + 1);
             matchRepository.save(nextMatch);
         }
-        if((series.getPlayerOneWins() != 0 && series.getPlayerTwoWins() != 0) && (series.getPlayerOneWins() + series.getPlayerTwoWins() == 4 ))
+        if(series.getPlayerOneWins() == 2 && series.getPlayerTwoWins() == 2){
+            Match nextMatch = createNextSeriesMatch(series, totalMatches + 1);
+            matchRepository.save(nextMatch);
+        }
+        if((series.getPlayerOneWins() != 0 && series.getPlayerTwoWins() != 0) &&
+           (series.getPlayerOneWins() + series.getPlayerTwoWins() == 4 )&&
+           totalMatches < 5)
         {
             Match nextMatch = createNextSeriesMatch(series, totalMatches + 1);
             matchRepository.save(nextMatch);
         }
-        if((series.getPlayerOneWins() != 0 && series.getPlayerTwoWins() != 0) && (series.getPlayerOneWins() + series.getPlayerTwoWins() == 5 ))
+        if((series.getPlayerOneWins() > 1 && series.getPlayerTwoWins() > 1) &&
+           (series.getPlayerOneWins() + series.getPlayerTwoWins() == 5 ) &&
+           totalMatches < 6)
         {
+            Match nextMatch = createNextSeriesMatch(series, totalMatches + 1);
+            matchRepository.save(nextMatch);
+        }
+        if(series.getPlayerOneWins() == 3 && series.getPlayerTwoWins() == 3){
             Match nextMatch = createNextSeriesMatch(series, totalMatches + 1);
             matchRepository.save(nextMatch);
         }
 
         // Save the updated series just in case
         seriesRepository.save(series);
+
+        // After setting series as completed and saving it
+        if (series.getPlayoff() != null) {
+            Playoff playoff = playoffRepository.findByIdWithSeries(series.getPlayoff().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Playoff not found"));
+            List<Series> allSeries = playoff.getSeries();
+
+            // If it's still in semifinals stage
+            if (allSeries.size() == 2 && allSeries.get(0).isCompleted() && allSeries.get(1).isCompleted()) {
+                playoffService.updatePlayoffAfterSemis(playoff.getId());
+            }
+
+            // If already includes final + 3rd place, check if all 4 are done
+            if (allSeries.size() == 4 && allSeries.get(2).isCompleted() && allSeries.get(3).isCompleted()) {
+                playoffService.finalizePlayoff(playoff.getId());
+            }
+        }
     }
 
     @Override
