@@ -173,6 +173,9 @@ public class MatchServiceImpl implements MatchesService
         match.setAtPoints(awayPoints);
         match.setIsFinished(true);
 
+        updateTeamUsage(match.getHtPlayerNickName(), match.getHomeTeam());
+        updateTeamUsage(match.getAtPlayerNickName(), match.getAwayTeam());
+
         matchRepository.save(match);
 
         eventPublisher.publishEvent(new MatchFinishedEvent(this, match));
