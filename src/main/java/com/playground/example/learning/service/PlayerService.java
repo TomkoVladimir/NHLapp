@@ -9,4 +9,6 @@ public interface PlayerService
     PlayerResponseDto createPlayer(PlayerRequestDto requestDto);
 
     PlayerStatsDto getPlayerStats(Long playerId);
+
+    java.util.List<PlayerResponseDto> getAllPlayers();
 }

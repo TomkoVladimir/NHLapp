@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/players")
 @AllArgsConstructor
@@ -26,5 +29,11 @@ public class PlayerController
     public ResponseEntity<PlayerStatsDto> getPlayerStats(@PathVariable("playerId") Long playerId) {
         PlayerStatsDto stats = playerService.getPlayerStats(playerId);
         return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PlayerResponseDto>> getAllPlayers() {
+        List<PlayerResponseDto> players = playerService.getAllPlayers();
+        return ResponseEntity.ok(players);
     }
 }

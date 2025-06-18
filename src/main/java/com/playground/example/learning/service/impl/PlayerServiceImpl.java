@@ -12,6 +12,9 @@ import com.playground.example.learning.service.PlayerStatsService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class PlayerServiceImpl implements PlayerService
@@ -51,5 +54,11 @@ public class PlayerServiceImpl implements PlayerService
             0,
             0
         );
+    }
+
+    public List<PlayerResponseDto> getAllPlayers() {
+        return playerRepository.findAll().stream()
+            .map(PlayerMapper::toResponseDto)
+            .collect(Collectors.toList());
     }
 }
