@@ -28,6 +28,7 @@ public class MatchServiceImpl implements MatchesService
     private TeamRepository teamRepository;
     private PlayerTeamCounterRepository playerTeamCounterRepository;
     private SeriesRepository seriesRepository;
+    private PlayerStatsRepository playerStatsRepository;
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
@@ -35,7 +36,6 @@ public class MatchServiceImpl implements MatchesService
     @Override
     public MatchResponseDto createStandaloneMatch(MatchRequestDto requestDto)
     {
-        // 1. Find players by nickname
         Player homePlayer = playerRepository.findByNickName(requestDto.getHtPlayerNickName())
             .orElseThrow(() -> new ResourceNotFoundException("Home player not found"));
 
@@ -46,7 +46,28 @@ public class MatchServiceImpl implements MatchesService
             .orElseThrow(() -> new ResourceNotFoundException("Home team not found"));
 
         Team awayTeam = teamRepository.findByName(requestDto.getAwayTeam())
-            .orElseThrow(() -> new ResourceNotFoundException("Home team not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Away team not found"));
+
+        PlayerStats homePlayerStats = playerStatsRepository.findByPlayerId(homePlayer.getId())
+            .orElseGet(() -> {
+                PlayerStats newStats = new PlayerStats();
+                newStats.setPlayer(homePlayer);
+                return playerStatsRepository.save(newStats);
+            });
+
+        PlayerStats awayPlayerStats = playerStatsRepository.findByPlayerId(awayPlayer.getId())
+            .orElseGet(() -> {
+                PlayerStats newStats = new PlayerStats();
+                newStats.setPlayer(awayPlayer);
+                return playerStatsRepository.save(newStats);
+            });
+
+        homePlayerStats.setMatchesPlayed(homePlayerStats.getMatchesPlayed() + 1);
+        awayPlayerStats.setMatchesPlayed(awayPlayerStats.getMatchesPlayed() + 1);
+        homePlayerStats.setScoredGoals(homePlayerStats.getScoredGoals() + requestDto.getHtScore());
+        homePlayerStats.setConcededGoals(homePlayerStats.getConcededGoals() + requestDto.getAtScore());
+        awayPlayerStats.setScoredGoals(awayPlayerStats.getScoredGoals() + requestDto.getAtScore());
+        awayPlayerStats.setConcededGoals(awayPlayerStats.getConcededGoals() + requestDto.getHtScore());
 
         updateTeamUsage(homePlayer, homeTeam);
         updateTeamUsage(awayPlayer, awayTeam);
@@ -55,8 +76,8 @@ public class MatchServiceImpl implements MatchesService
         Match match = MatchMapper.toMatchEntity(requestDto);
 
         // Now set the Player entities explicitly
-        match.setHtPlayerNickName(homePlayer);
-        match.setAtPlayerNickName(awayPlayer);
+        match.setHtPlayer(homePlayer);
+        match.setAtPlayer(awayPlayer);
         match.setHomeTeam(homeTeam);
         match.setAwayTeam(awayTeam);
 
@@ -85,30 +106,43 @@ public class MatchServiceImpl implements MatchesService
             else if(requestDto.getHtScore() > requestDto.getAtScore())
             {
                 homePoints = 2;
+                homePlayerStats.setExtraTimeWins(homePlayerStats.getExtraTimeWins() + 1);
                 awayPoints = 1;
+                awayPlayerStats.setExtraTimeLosses(awayPlayerStats.getExtraTimeLosses() + 1);
             }
             else
             {
                 homePoints = 1;
+                homePlayerStats.setExtraTimeLosses(homePlayerStats.getExtraTimeLosses() + 1);
                 awayPoints = 2;
+                awayPlayerStats.setExtraTimeWins(awayPlayerStats.getExtraTimeWins() + 1);
             }
         }
         else if(requestDto.getHtScore() > requestDto.getAtScore())
         {
             homePoints = 3;
+            homePlayerStats.setWins(homePlayerStats.getWins() + 1);
+            awayPlayerStats.setLosses(awayPlayerStats.getLosses() + 1);
         }
         else
         {
             awayPoints = 3;
+            awayPlayerStats.setWins(awayPlayerStats.getWins() + 1);
+            homePlayerStats.setLosses(homePlayerStats.getLosses() + 1);
         }
 
         match.setHtPoints(homePoints);
         match.setAtPoints(awayPoints);
 
+        homePlayerStats.setPoints(homePlayerStats.getPoints() + homePoints);
+        awayPlayerStats.setPoints(awayPlayerStats.getPoints() + awayPoints);
+
         match.setIsFinished(true); // Assuming match is finished upon creation
 
         // Save
         Match savedMatch = matchRepository.save(match);
+        playerStatsRepository.save(homePlayerStats);
+        playerStatsRepository.save(awayPlayerStats);
 
         // Return DTO
         return MatchMapper.toResponseDto(savedMatch);
@@ -118,8 +152,8 @@ public class MatchServiceImpl implements MatchesService
     {
         Match match = new Match();
         match.setMatchDate(LocalDateTime.now().toString()); // Set current date
-        match.setHtPlayerNickName(homePlayer);
-        match.setAtPlayerNickName(awayPlayer);
+        match.setHtPlayer(homePlayer);
+        match.setAtPlayer(awayPlayer);
         match.setHomeTeam(homeTeam);
         match.setAwayTeam(awayTeam);
         match.setSeries(series);
@@ -133,10 +167,31 @@ public class MatchServiceImpl implements MatchesService
         Match match = matchRepository.findById(matchId)
             .orElseThrow(() -> new ResourceNotFoundException("Match not found"));
 
+        PlayerStats homePlayerStats = playerStatsRepository.findByPlayerNickName(match.getHtPlayer().getNickName())
+            .orElseGet(() -> {
+                PlayerStats newStats = new PlayerStats();
+                newStats.setPlayer(match.getHtPlayer());
+                return playerStatsRepository.save(newStats);
+            });
+
+        PlayerStats awayPlayerStats = playerStatsRepository.findByPlayerNickName(match.getAtPlayer().getNickName())
+            .orElseGet(() -> {
+                PlayerStats newStats = new PlayerStats();
+                newStats.setPlayer(match.getAtPlayer());
+                return playerStatsRepository.save(newStats);
+            });
+
         if(match.getIsFinished())
         {
             throw new InvalidMatchDataException("Match is already finished.");
         }
+
+        homePlayerStats.setMatchesPlayed(homePlayerStats.getMatchesPlayed() + 1);
+        awayPlayerStats.setMatchesPlayed(awayPlayerStats.getMatchesPlayed() + 1);
+        homePlayerStats.setScoredGoals(homePlayerStats.getScoredGoals() + htScore);
+        homePlayerStats.setConcededGoals(homePlayerStats.getConcededGoals() + atScore);
+        awayPlayerStats.setScoredGoals(awayPlayerStats.getScoredGoals() + atScore);
+        awayPlayerStats.setConcededGoals(awayPlayerStats.getConcededGoals() + htScore);
 
         match.setHtScore(htScore);
         match.setAtScore(atScore);
@@ -152,31 +207,43 @@ public class MatchServiceImpl implements MatchesService
             if(htScore > atScore)
             {
                 homePoints = 2;
+                homePlayerStats.setExtraTimeWins(homePlayerStats.getExtraTimeWins() + 1);
                 awayPoints = 1;
+                awayPlayerStats.setExtraTimeLosses(awayPlayerStats.getExtraTimeLosses() + 1);
             }
             else
             {
                 homePoints = 1;
+                homePlayerStats.setExtraTimeLosses(homePlayerStats.getExtraTimeLosses() + 1);
                 awayPoints = 2;
+                awayPlayerStats.setExtraTimeWins(awayPlayerStats.getExtraTimeWins() + 1);
             }
         }
         else if(htScore > atScore)
         {
             homePoints = 3;
+            homePlayerStats.setWins(homePlayerStats.getWins() + 1);
+            awayPlayerStats.setLosses(awayPlayerStats.getLosses() + 1);
         }
         else
         {
             awayPoints = 3;
+            awayPlayerStats.setWins(awayPlayerStats.getWins() + 1);
+            homePlayerStats.setLosses(homePlayerStats.getLosses() + 1);
         }
 
         match.setHtPoints(homePoints);
         match.setAtPoints(awayPoints);
+        homePlayerStats.setPoints(homePlayerStats.getPoints() + homePoints);
+        awayPlayerStats.setPoints(awayPlayerStats.getPoints() + awayPoints);
         match.setIsFinished(true);
 
-        updateTeamUsage(match.getHtPlayerNickName(), match.getHomeTeam());
-        updateTeamUsage(match.getAtPlayerNickName(), match.getAwayTeam());
+        updateTeamUsage(match.getHtPlayer(), match.getHomeTeam());
+        updateTeamUsage(match.getAtPlayer(), match.getAwayTeam());
 
         matchRepository.save(match);
+        playerStatsRepository.save(homePlayerStats);
+        playerStatsRepository.save(awayPlayerStats);
 
         eventPublisher.publishEvent(new MatchFinishedEvent(this, match));
 

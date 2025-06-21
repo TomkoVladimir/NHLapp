@@ -22,8 +22,8 @@ public class MatchMapper
     {
         MatchResponseDto dto = new MatchResponseDto();
         dto.setMatchDate(match.getMatchDate());
-        dto.setHtPlayerNickName(match.getHtPlayerNickName().getNickName());
-        dto.setAtPlayerNickName(match.getAtPlayerNickName().getNickName());
+        dto.setHtPlayerNickName(match.getHtPlayer().getNickName());
+        dto.setAtPlayerNickName(match.getAtPlayer().getNickName());
         dto.setHomeTeam(match.getHomeTeam().getName());
         dto.setAwayTeam(match.getAwayTeam().getName());
         dto.setHtScore(match.getHtScore());

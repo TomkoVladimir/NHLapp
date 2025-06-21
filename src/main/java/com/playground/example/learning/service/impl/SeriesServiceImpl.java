@@ -98,8 +98,8 @@ public class SeriesServiceImpl implements SeriesService
         int htScore = match.getHtScore();
         int atScore = match.getAtScore();
 
-        Player homePlayer = match.getHtPlayerNickName();
-        Player awayPlayer = match.getAtPlayerNickName();
+        Player homePlayer = match.getHtPlayer();
+        Player awayPlayer = match.getAtPlayer();
 
         if (htScore == atScore) {
             // Invalid NHL scenario: a playoff game can't end in a tie

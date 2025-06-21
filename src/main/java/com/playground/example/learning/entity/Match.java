@@ -21,11 +21,11 @@ public class Match
 
     @ManyToOne
     @JoinColumn(name = "ht_player_nickname", nullable = false)
-    private Player htPlayerNickName;
+    private Player htPlayer;
 
     @ManyToOne
     @JoinColumn(name = "at_player_nickname", nullable = false)
-    private Player atPlayerNickName;
+    private Player atPlayer;
 
     @ManyToOne
     @JoinColumn(name = "home_team", nullable = false)
