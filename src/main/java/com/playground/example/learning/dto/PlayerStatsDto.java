@@ -1,6 +1,5 @@
 package com.playground.example.learning.dto;
 
-import com.playground.example.learning.entity.Player;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
