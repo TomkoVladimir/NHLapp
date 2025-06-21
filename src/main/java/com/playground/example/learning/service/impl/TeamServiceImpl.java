@@ -8,6 +8,8 @@ import com.playground.example.learning.service.TeamService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class TeamServiceImpl implements TeamService
@@ -20,5 +22,12 @@ public class TeamServiceImpl implements TeamService
         Team team = TeamMapper.mapToEntity(teamDto);
         Team savedTeam = teamRepository.save(team);
         return TeamMapper.mapToTeamDto(savedTeam);
+    }
+
+    public List<TeamDto> getAllTeams() {
+        return teamRepository.findAll()
+            .stream()
+            .map(team -> new TeamDto(team.getId(), team.getName()))
+            .toList();
     }
 }
