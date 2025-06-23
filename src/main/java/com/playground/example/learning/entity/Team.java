@@ -14,10 +14,18 @@ import lombok.Setter;
 @Table(name = "teams")
 public class Team
 {
+    @SequenceGenerator(
+        name = "team_seq",
+        sequenceName = "team_seq", // Name of DB sequence
+        allocationSize = 1
+    )
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "team_seq")
     private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "logo", nullable = false)
+    private String logo;
 }

@@ -27,7 +27,7 @@ public class TeamServiceImpl implements TeamService
     public List<TeamDto> getAllTeams() {
         return teamRepository.findAll()
             .stream()
-            .map(team -> new TeamDto(team.getId(), team.getName()))
+            .map(team -> new TeamDto(team.getId(), team.getName(), team.getLogo()))
             .toList();
     }
 }

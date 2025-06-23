@@ -9,7 +9,8 @@ public class TeamMapper
     {
         return new TeamDto(
             team.getId(),
-            team.getName()
+            team.getName(),
+            team.getLogo()
         );
     }
 
@@ -17,7 +18,8 @@ public class TeamMapper
     {
         return new Team(
             teamDto.getId(),
-            teamDto.getName()
+            teamDto.getName(),
+            teamDto.getLogo()
         );
     }
 }

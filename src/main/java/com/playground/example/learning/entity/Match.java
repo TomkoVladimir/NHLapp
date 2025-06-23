@@ -12,8 +12,13 @@ import lombok.*;
 @Table(name = "matches")
 public class Match
 {
+    @SequenceGenerator(
+        name = "match_seq",
+        sequenceName = "match_seq", // Name of DB sequence
+        allocationSize = 1
+    )
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "match_seq")
     private Long id;
 
     @Column(name = "match_date", nullable = false)

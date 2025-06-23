@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -151,7 +152,7 @@ public class MatchServiceImpl implements MatchesService
     public Match createSeriesMatch(Player homePlayer, Player awayPlayer, Team homeTeam, Team awayTeam, Series series)
     {
         Match match = new Match();
-        match.setMatchDate(LocalDateTime.now().toString()); // Set current date
+        match.setMatchDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))); // Set current date
         match.setHtPlayer(homePlayer);
         match.setAtPlayer(awayPlayer);
         match.setHomeTeam(homeTeam);
