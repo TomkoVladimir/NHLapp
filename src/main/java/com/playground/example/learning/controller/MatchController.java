@@ -39,9 +39,10 @@ public class MatchController
     }
 
     @GetMapping
-    public ResponseEntity<List<MatchResponseDto>> getAllMatches()
+    public ResponseEntity<List<MatchResponseDto>> getAllMatches(@RequestParam(name= "limit", defaultValue = "30") int limit,
+                                                                 @RequestParam(name= "offset", defaultValue = "0") int offset)
     {
-        List<MatchResponseDto> matches = matchesService.getAllMatches();
+        List<MatchResponseDto> matches = matchesService.getAllMatches(limit, offset);
         return ResponseEntity.ok(matches);
     }
 }

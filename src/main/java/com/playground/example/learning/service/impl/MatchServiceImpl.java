@@ -12,6 +12,9 @@ import com.playground.example.learning.service.MatchesService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -251,9 +254,11 @@ public class MatchServiceImpl implements MatchesService
         return MatchMapper.toResponseDto(match);
     }
 
-    public List<MatchResponseDto> getAllMatches()
-    {
-        return matchRepository.findAll().stream()
+    public List<MatchResponseDto> getAllMatches(int limit, int offset) {
+        Pageable pageable = PageRequest.of(offset / limit, limit, Sort.by(Sort.Direction.DESC, "matchDate"));
+
+        return matchRepository.findAll(pageable)
+            .stream()
             .map(MatchMapper::toResponseDto)
             .collect(Collectors.toList());
     }

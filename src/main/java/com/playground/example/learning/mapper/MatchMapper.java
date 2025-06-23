@@ -24,8 +24,8 @@ public class MatchMapper
         dto.setMatchDate(match.getMatchDate());
         dto.setHtPlayerNickName(match.getHtPlayer().getNickName());
         dto.setAtPlayerNickName(match.getAtPlayer().getNickName());
-        dto.setHomeTeam(match.getHomeTeam().getName());
-        dto.setAwayTeam(match.getAwayTeam().getName());
+        dto.setHomeTeam(match.getHomeTeam());
+        dto.setAwayTeam(match.getAwayTeam());
         dto.setHtScore(match.getHtScore());
         dto.setAtScore(match.getAtScore());
         dto.setOverTime(match.getOverTime());

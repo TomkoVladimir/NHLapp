@@ -1,5 +1,6 @@
 package com.playground.example.learning.dto.MatchDto;
 
+import com.playground.example.learning.entity.Team;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,8 +15,8 @@ public class MatchResponseDto
     private String matchDate;
     private String htPlayerNickName;
     private String atPlayerNickName;
-    private String homeTeam;
-    private String awayTeam;
+    private Team homeTeam;
+    private Team awayTeam;
     private Integer htScore;
     private Integer atScore;
     private Boolean overTime;
