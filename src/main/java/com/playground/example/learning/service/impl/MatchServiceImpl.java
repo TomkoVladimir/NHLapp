@@ -278,4 +278,13 @@ public class MatchServiceImpl implements MatchesService
             playerTeamCounterRepository.save(new PlayerTeamCounter(player, team));
         }
     }
+
+    @Override
+    public MatchResponseDto getMatchById(Long matchId)
+    {
+        Match match = matchRepository.findById(matchId)
+            .orElseThrow(() -> new ResourceNotFoundException("Match not found"));
+
+        return MatchMapper.toResponseDto(match);
+    }
 }

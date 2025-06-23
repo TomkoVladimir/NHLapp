@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/series")
 @AllArgsConstructor
@@ -29,5 +30,21 @@ public class SeriesController
     {
         List<SeriesResponseDto> seriesList = seriesService.getAllSeries();
         return ResponseEntity.ok(seriesList);
+    }
+
+    @GetMapping("/{seriesId}")
+    public ResponseEntity<SeriesResponseDto> getSeriesById(@PathVariable("seriesId") Long seriesId)
+    {
+        List<SeriesResponseDto> allSeries = seriesService.getAllSeries();
+        SeriesResponseDto series = allSeries.stream()
+                .filter(s -> s.getSeriesId().equals(seriesId))
+                .findFirst()
+                .orElse(null);
+
+        if (series == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.ok(series);
     }
 }

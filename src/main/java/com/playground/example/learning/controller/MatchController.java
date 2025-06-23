@@ -45,4 +45,11 @@ public class MatchController
         List<MatchResponseDto> matches = matchesService.getAllMatches(limit, offset);
         return ResponseEntity.ok(matches);
     }
+
+    @GetMapping("/{matchId}")
+    public ResponseEntity<MatchResponseDto> getMatchById(@PathVariable("matchId") Long matchId)
+    {
+        MatchResponseDto match = matchesService.getMatchById(matchId);
+        return ResponseEntity.ok(match);
+    }
 }

@@ -12,4 +12,6 @@ public interface MatchesService
     MatchResponseDto finishMatch(Long matchId, int htScore, int atScore, boolean overTime);
 
     List<MatchResponseDto> getAllMatches(int limit, int offset);
+
+    MatchResponseDto getMatchById(Long matchId);
 }

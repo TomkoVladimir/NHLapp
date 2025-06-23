@@ -9,10 +9,11 @@ public class SeriesMapper
     public static SeriesResponseDto toResponseDto(Series series) {
         SeriesResponseDto dto = new SeriesResponseDto();
         dto.setSeriesId(series.getId());
+        dto.setCreatedAt(series.getCreatedAt());
         dto.setPlayerOneNickName(series.getPlayerOne().getNickName()); // assuming Player has getNickname()
         dto.setPlayerTwoNickName(series.getPlayerTwo().getNickName());
-        dto.setTeamOneName(series.getTeamOne().getName());
-        dto.setTeamTwoName(series.getTeamTwo().getName());
+        dto.setTeamOneName(series.getTeamOne());
+        dto.setTeamTwoName(series.getTeamTwo());
         dto.setWinner(series.getWinner() != null ? series.getWinner().getNickName() : null);
         dto.setMatchIds(series.getMatches().stream()
                 .map(Match::getId)

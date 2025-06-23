@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 public class MatchResponseDto
 {
+    private Long id;
     private String matchDate;
     private String htPlayerNickName;
     private String atPlayerNickName;

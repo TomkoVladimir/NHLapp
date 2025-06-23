@@ -21,6 +21,7 @@ public class MatchMapper
     public static MatchResponseDto toResponseDto(Match match)
     {
         MatchResponseDto dto = new MatchResponseDto();
+        dto.setId(match.getId());
         dto.setMatchDate(match.getMatchDate());
         dto.setHtPlayerNickName(match.getHtPlayer().getNickName());
         dto.setAtPlayerNickName(match.getAtPlayer().getNickName());

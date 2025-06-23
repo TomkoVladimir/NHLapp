@@ -52,7 +52,8 @@ public class Series
     @Column(name = "completed", nullable = false)
     private boolean completed = false;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @Column(name = "player_one_wins")
     private int playerOneWins;
