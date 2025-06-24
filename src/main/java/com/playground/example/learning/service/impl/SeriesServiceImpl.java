@@ -33,6 +33,10 @@ public class SeriesServiceImpl implements SeriesService
     @Override
     public SeriesResponseDto createSeries(SeriesRequestDto dto)
     {
+        if (dto.getPlayerOneNickName().equals(dto.getPlayerTwoNickName())) {
+            throw new IllegalArgumentException("Player One and Two cannot be the same.");
+        }
+
         // Fetch players
         Player playerOne = playerRepository.findByNickName(dto.getPlayerOneNickName())
             .orElseThrow(() -> new ResourceNotFoundException("Player one not found"));
