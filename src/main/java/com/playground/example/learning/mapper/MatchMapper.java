@@ -32,6 +32,7 @@ public class MatchMapper
         dto.setOverTime(match.getOverTime());
         dto.setHtPoints(match.getHtPoints());
         dto.setAtPoints(match.getAtPoints());
+        dto.setSeriesId(Math.toIntExact(match.getSeries() != null ? match.getSeries().getId() : 0L));
         return dto;
     }
 }

@@ -23,4 +23,5 @@ public class MatchResponseDto
     private Boolean overTime;
     private Integer htPoints;
     private Integer atPoints;
+    private Integer seriesId;
 }
