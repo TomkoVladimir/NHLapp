@@ -22,4 +22,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidMatchDataException.class)
+    public ResponseEntity<String> handleInvalidMatchData(InvalidMatchDataException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 }

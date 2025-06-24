@@ -40,6 +40,14 @@ public class MatchServiceImpl implements MatchesService
     @Override
     public MatchResponseDto createStandaloneMatch(MatchRequestDto requestDto)
     {
+        if (requestDto.getHtPlayerNickName().equals(requestDto.getAtPlayerNickName())) {
+            throw new IllegalArgumentException("Player One and Two cannot be the same.");
+        }
+
+        if (requestDto.getHtScore().equals(requestDto.getAtScore())) {
+            throw new IllegalArgumentException("Match cannot end in a draw.");
+        }
+
         Player homePlayer = playerRepository.findByNickName(requestDto.getHtPlayerNickName())
             .orElseThrow(() -> new ResourceNotFoundException("Home player not found"));
 
@@ -168,6 +176,10 @@ public class MatchServiceImpl implements MatchesService
     @Override
     public MatchResponseDto finishMatch(Long matchId, int htScore, int atScore, boolean overTime)
     {
+        if (htScore == atScore) {
+            throw new IllegalArgumentException("Match cannot end in a draw.");
+        }
+
         Match match = matchRepository.findById(matchId)
             .orElseThrow(() -> new ResourceNotFoundException("Match not found"));
 
