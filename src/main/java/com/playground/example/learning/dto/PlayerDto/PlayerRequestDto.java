@@ -14,4 +14,5 @@ public class PlayerRequestDto
     private String firstName;
     private String lastName;
     private String nickName;
+    private String validationCode;
 }

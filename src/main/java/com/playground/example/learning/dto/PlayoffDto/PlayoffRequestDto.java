@@ -18,4 +18,5 @@ public class PlayoffRequestDto
     private String playoffTitle;
     List<Player> players;
     List<Team> teams;
+    private String validationCode;
 }

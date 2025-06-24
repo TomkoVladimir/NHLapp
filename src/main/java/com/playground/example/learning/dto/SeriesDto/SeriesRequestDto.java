@@ -14,4 +14,5 @@ public class SeriesRequestDto {
     private String playerTwoNickName;
     private String teamOneName;
     private String teamTwoName;
+    private String validationCode;
 }

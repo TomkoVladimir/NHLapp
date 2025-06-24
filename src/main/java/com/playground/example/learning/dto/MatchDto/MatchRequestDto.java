@@ -20,4 +20,5 @@ public class MatchRequestDto
     private Integer atScore;
     private Boolean overTime;
     private Long seriesId;
+    private String validationCode;
 }
