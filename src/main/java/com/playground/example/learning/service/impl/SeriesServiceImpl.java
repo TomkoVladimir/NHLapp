@@ -8,6 +8,9 @@ import com.playground.example.learning.mapper.SeriesMapper;
 import com.playground.example.learning.repository.*;
 import com.playground.example.learning.service.SeriesService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -232,10 +235,12 @@ public class SeriesServiceImpl implements SeriesService
         return matchService.createSeriesMatch(homePlayer, awayPlayer, homeTeam, awayTeam, series);
     }
 
-    public List<SeriesResponseDto> getAllSeries()
+    public List<SeriesResponseDto> getAllSeries(int limit, int offset)
     {
-        List<Series> seriesList = seriesRepository.findAll();
-        return seriesList.stream()
+        Pageable pageable = PageRequest.of(offset / limit, limit, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        return seriesRepository.findAll(pageable)
+            .stream()
             .map(SeriesMapper::toResponseDto)
             .collect(Collectors.toList());
     }

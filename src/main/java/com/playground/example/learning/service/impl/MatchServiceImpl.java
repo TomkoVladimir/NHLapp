@@ -155,7 +155,7 @@ public class MatchServiceImpl implements MatchesService
     public Match createSeriesMatch(Player homePlayer, Player awayPlayer, Team homeTeam, Team awayTeam, Series series)
     {
         Match match = new Match();
-        match.setMatchDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))); // Set current date
+        match.setMatchDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))); // Set current date
         match.setHtPlayer(homePlayer);
         match.setAtPlayer(awayPlayer);
         match.setHomeTeam(homeTeam);

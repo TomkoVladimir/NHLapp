@@ -2,8 +2,14 @@ package com.playground.example.learning.controller;
 
 import com.playground.example.learning.dto.SeriesDto.SeriesRequestDto;
 import com.playground.example.learning.dto.SeriesDto.SeriesResponseDto;
+import com.playground.example.learning.entity.Series;
+import com.playground.example.learning.mapper.SeriesMapper;
+import com.playground.example.learning.repository.SeriesRepository;
 import com.playground.example.learning.service.SeriesService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +23,7 @@ import java.util.List;
 public class SeriesController
 {
     private final SeriesService seriesService;
+    SeriesRepository seriesRepository;
 
     @PostMapping
     public ResponseEntity<SeriesResponseDto> createSeries(@RequestBody SeriesRequestDto seriesRequestDto)
@@ -26,25 +33,24 @@ public class SeriesController
     }
 
     @GetMapping
-    public ResponseEntity<List<SeriesResponseDto>> getAllSeries()
+    public ResponseEntity<List<SeriesResponseDto>> getAllSeries(@RequestParam(name= "limit", defaultValue = "6") int limit,
+                                                                @RequestParam(name= "offset", defaultValue = "0") int offset)
     {
-        List<SeriesResponseDto> seriesList = seriesService.getAllSeries();
+        List<SeriesResponseDto> seriesList = seriesService.getAllSeries(limit, offset);
         return ResponseEntity.ok(seriesList);
     }
 
     @GetMapping("/{seriesId}")
     public ResponseEntity<SeriesResponseDto> getSeriesById(@PathVariable("seriesId") Long seriesId)
     {
-        List<SeriesResponseDto> allSeries = seriesService.getAllSeries();
-        SeriesResponseDto series = allSeries.stream()
-                .filter(s -> s.getSeriesId().equals(seriesId))
-                .findFirst()
-                .orElse(null);
+        Series series = seriesRepository.findById(seriesId)
+            .orElse(null);
 
         if (series == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return ResponseEntity.ok(series);
+        SeriesResponseDto dto = SeriesMapper.toResponseDto(series);
+        return ResponseEntity.ok(dto);
     }
 }

@@ -15,5 +15,5 @@ public interface SeriesService
 
     Match createNextSeriesMatch(Series series, int matchNumber);
 
-    List<SeriesResponseDto> getAllSeries();
+    List<SeriesResponseDto> getAllSeries(int limit, int offset);
 }
