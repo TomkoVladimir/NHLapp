@@ -62,4 +62,16 @@ public class MatchController
         MatchResponseDto match = matchesService.getMatchById(matchId);
         return ResponseEntity.ok(match);
     }
+
+    @DeleteMapping("/{matchId}")
+    public ResponseEntity<?> deleteMatch(@PathVariable("matchId") Long matchId,
+                                         @RequestBody FinishMatchRequest request)
+    {
+        if (!codeValidator.isValid(request.getValidationCode())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Invalid code."));
+        }
+
+        matchesService.deleteMatchById(matchId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

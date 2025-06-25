@@ -14,4 +14,6 @@ public interface MatchesService
     List<MatchResponseDto> getAllMatches(int limit, int offset);
 
     MatchResponseDto getMatchById(Long matchId);
+
+    MatchResponseDto deleteMatchById(Long matchId);
 }

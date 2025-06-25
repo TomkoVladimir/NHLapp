@@ -299,4 +299,58 @@ public class MatchServiceImpl implements MatchesService
 
         return MatchMapper.toResponseDto(match);
     }
+
+    @Override
+    public MatchResponseDto deleteMatchById(Long matchId)
+    {
+        Match match = matchRepository.findById(matchId)
+            .orElseThrow(() -> new ResourceNotFoundException("Match not found"));
+
+        if (!match.getIsFinished()) {
+            matchRepository.delete(match);
+            return MatchMapper.toResponseDto(match); // or null
+        }
+
+        // Revert stats for home player
+        PlayerStats homeStats = playerStatsRepository.findByPlayerId(match.getHtPlayer().getId())
+            .orElseThrow(() -> new IllegalStateException("Home stats not found"));
+
+        PlayerStats awayStats = playerStatsRepository.findByPlayerId(match.getAtPlayer().getId())
+            .orElseThrow(() -> new IllegalStateException("Away stats not found"));
+
+        homeStats.setMatchesPlayed(homeStats.getMatchesPlayed() - 1);
+        awayStats.setMatchesPlayed(awayStats.getMatchesPlayed() - 1);
+
+        homeStats.setScoredGoals(homeStats.getScoredGoals() - match.getHtScore());
+        homeStats.setConcededGoals(homeStats.getConcededGoals() - match.getAtScore());
+        awayStats.setScoredGoals(awayStats.getScoredGoals() - match.getAtScore());
+        awayStats.setConcededGoals(awayStats.getConcededGoals() - match.getHtScore());
+
+        // Undo win/loss/OT
+        if (match.getOverTime()) {
+            if (match.getHtScore() > match.getAtScore()) {
+                homeStats.setExtraTimeWins(homeStats.getExtraTimeWins() - 1);
+                awayStats.setExtraTimeLosses(awayStats.getExtraTimeLosses() - 1);
+            } else {
+                awayStats.setExtraTimeWins(awayStats.getExtraTimeWins() - 1);
+                homeStats.setExtraTimeLosses(homeStats.getExtraTimeLosses() - 1);
+            }
+        } else if (match.getHtScore() > match.getAtScore()) {
+            homeStats.setWins(homeStats.getWins() - 1);
+            awayStats.setLosses(awayStats.getLosses() - 1);
+        } else {
+            awayStats.setWins(awayStats.getWins() - 1);
+            homeStats.setLosses(homeStats.getLosses() - 1);
+        }
+
+        homeStats.setPoints(homeStats.getPoints() - match.getHtPoints());
+        awayStats.setPoints(awayStats.getPoints() - match.getAtPoints());
+
+        playerStatsRepository.save(homeStats);
+        playerStatsRepository.save(awayStats);
+
+        matchRepository.delete(match);
+
+        return MatchMapper.toResponseDto(match);
+    }
 }
