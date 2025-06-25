@@ -30,4 +30,11 @@ public class PlayoffController
         PlayoffResponseDto response = playoffService.createPlayoff(playoffRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @GetMapping
+    public ResponseEntity<?> getAllPlayoffs(@RequestParam(name = "limit", defaultValue = "4") int limit,
+                                            @RequestParam(name = "offset", defaultValue = "0") int offset)
+    {
+        return ResponseEntity.ok(playoffService.getAllPlayoffs(limit, offset));
+    }
 }

@@ -198,12 +198,14 @@ public class SeriesServiceImpl implements SeriesService
             // If it's still in semifinals stage
             if(allSeries.size() == 2 && allSeries.get(0).isCompleted() && allSeries.get(1).isCompleted())
             {
+                playoff.setSemiFinalsCompleted(true);
                 playoffService.updatePlayoffAfterSemis(playoff.getId());
             }
 
             // If already includes final + 3rd place, check if all 4 are done
             if(allSeries.size() == 4 && allSeries.get(2).isCompleted() && allSeries.get(3).isCompleted())
             {
+                playoff.setFinalsCompleted(true);
                 playoffService.finalizePlayoff(playoff.getId());
             }
         }

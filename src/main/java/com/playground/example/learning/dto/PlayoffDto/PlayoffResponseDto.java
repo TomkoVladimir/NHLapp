@@ -1,12 +1,12 @@
 package com.playground.example.learning.dto.PlayoffDto;
 
 import com.playground.example.learning.dto.SeriesDto.SeriesResponseDto;
-import com.playground.example.learning.entity.Series;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
@@ -16,6 +16,12 @@ import java.util.List;
 public class PlayoffResponseDto
 {
     private Long playoffId;
+    private LocalDateTime createdAt;
     private String playoffTitle;
     List<SeriesResponseDto> series;
+    private boolean semiFinalsCompleted;
+    private boolean finalsCompleted;
+    private String winner;
+    private String secondPlace;
+    private String thirdPlace;
 }

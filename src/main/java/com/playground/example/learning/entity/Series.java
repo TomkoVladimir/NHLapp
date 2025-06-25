@@ -22,6 +22,9 @@ public class Series
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "player_one_id")
     private Player playerOne;
@@ -49,17 +52,14 @@ public class Series
     @JoinColumn(name = "winner_id")
     private Player winner;
 
-    @Column(name = "completed", nullable = false)
-    private boolean completed = false;
-
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
     @Column(name = "player_one_wins")
     private int playerOneWins;
 
     @Column(name = "player_two_wins")
     private int playerTwoWins;
+
+    @Column(name = "completed", nullable = false)
+    private boolean completed = false;
 }
 
 

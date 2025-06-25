@@ -20,8 +20,6 @@ public class SeriesMapper
                 .toList());
         dto.setCompleted(series.isCompleted());
         dto.setPlayoffId(series.getPlayoff() != null ? series.getPlayoff().getId() : null);// Assuming Series has a getMatches() method that returns a
-        // List of
-        // Match entities
         return dto;
     }
 }

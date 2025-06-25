@@ -301,14 +301,15 @@ public class MatchServiceImpl implements MatchesService
     }
 
     @Override
-    public MatchResponseDto deleteMatchById(Long matchId)
+    public void deleteMatchById(Long matchId)
     {
         Match match = matchRepository.findById(matchId)
             .orElseThrow(() -> new ResourceNotFoundException("Match not found"));
 
         if (!match.getIsFinished()) {
             matchRepository.delete(match);
-            return MatchMapper.toResponseDto(match); // or null
+            MatchMapper.toResponseDto(match);
+            return; // or null
         }
 
         // Revert stats for home player
@@ -351,6 +352,6 @@ public class MatchServiceImpl implements MatchesService
 
         matchRepository.delete(match);
 
-        return MatchMapper.toResponseDto(match);
+        MatchMapper.toResponseDto(match);
     }
 }

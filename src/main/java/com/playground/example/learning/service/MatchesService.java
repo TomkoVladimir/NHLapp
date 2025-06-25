@@ -15,5 +15,5 @@ public interface MatchesService
 
     MatchResponseDto getMatchById(Long matchId);
 
-    MatchResponseDto deleteMatchById(Long matchId);
+    void deleteMatchById(Long matchId);
 }

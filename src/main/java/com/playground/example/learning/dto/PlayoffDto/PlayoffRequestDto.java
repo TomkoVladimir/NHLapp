@@ -16,7 +16,13 @@ import java.util.List;
 public class PlayoffRequestDto
 {
     private String playoffTitle;
-    List<Player> players;
-    List<Team> teams;
+    private String playerOneNickName;
+    private String playerTwoNickName;
+    private String playerThreeNickName;
+    private String playerFourNickName;
+    private String teamOneName;
+    private String teamTwoName;
+    private String teamThreeName;
+    private String teamFourName;
     private String validationCode;
 }

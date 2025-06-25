@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,11 +22,20 @@ public class Playoff
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "title", nullable = false)
+    private String title;
 
     @OneToMany(mappedBy = "playoff", cascade = CascadeType.ALL)
     private List<Series> series = new ArrayList<>();
+
+    @Column(name = "semi_finals_completed", nullable = false)
+    private boolean semiFinalsCompleted = false;
+
+    @Column(name = "finals_completed", nullable = false)
+    private boolean finalsCompleted = false;
 
     @Column(name = "winner")
     private String winner;
