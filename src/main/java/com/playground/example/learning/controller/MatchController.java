@@ -1,6 +1,7 @@
 package com.playground.example.learning.controller;
 
 import com.playground.example.learning.code.SecretCodeValidator;
+import com.playground.example.learning.dto.FinishMatchRequest;
 import com.playground.example.learning.dto.MatchDto.MatchRequestDto;
 import com.playground.example.learning.dto.MatchDto.MatchResponseDto;
 import com.playground.example.learning.service.MatchesService;
@@ -33,14 +34,16 @@ public class MatchController
     }
 
     @PutMapping("/{matchId}/finish")
-    public ResponseEntity<MatchResponseDto> finishMatch(
+    public ResponseEntity<?> finishMatch(
         @PathVariable("matchId") Long matchId,
-        @RequestParam("htScore") int htScore,
-        @RequestParam("atScore") int atScore,
-        @RequestParam("overTime") boolean overTime
+        @RequestBody FinishMatchRequest request
     )
     {
-        MatchResponseDto response = matchesService.finishMatch(matchId, htScore, atScore, overTime);
+        if (!codeValidator.isValid(request.getValidationCode())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Invalid code."));
+        }
+
+        MatchResponseDto response = matchesService.finishMatch(matchId, request.getHtScore(), request.getAtScore(), request.isOverTime());
 
         return ResponseEntity.ok(response);
     }
