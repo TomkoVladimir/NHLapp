@@ -131,6 +131,28 @@ public class PlayoffServiceImpl implements PlayoffService
         }).toList();
     }
 
+    @Override
+    public PlayoffResponseDto getPlayoffById(Long playoffId)
+    {
+        Playoff playoff = playoffRepository.findById(playoffId)
+            .orElseThrow(() -> new ResourceNotFoundException("Playoff not found"));
+        List<SeriesResponseDto> seriesDtos = playoff.getSeries().stream()
+            .map(SeriesMapper::toResponseDto)
+            .toList();
+
+        return new PlayoffResponseDto(
+            playoff.getId(),
+            playoff.getCreatedAt(),
+            playoff.getTitle(), // maps to playoffTitle
+            seriesDtos,
+            playoff.isSemiFinalsCompleted(), // semiFinalsCompleted
+            playoff.isFinalsCompleted(),     // finalsCompleted
+            playoff.getWinner(),
+            playoff.getSecondPlace(),
+            playoff.getThirdPlace()
+        );
+    }
+
     private Series createSeries(Pair<Player, Team> p1, Pair<Player, Team> p2, Playoff playoff)
     {
         Series series = new Series();
@@ -185,14 +207,15 @@ public class PlayoffServiceImpl implements PlayoffService
         Team winner2Team = semi2.getPlayerOne().equals(winner2) ? semi2.getTeamOne() : semi2.getTeamTwo();
         Team loser2Team = semi2.getPlayerOne().equals(loser2) ? semi2.getTeamOne() : semi2.getTeamTwo();
 
-        // Create final series
-        Series finalSeries = createSeries(Pair.of(winner1, winner1Team), Pair.of(winner2, winner2Team), playoff);
         // Create 3rd-place series
         Series thirdPlaceSeries = createSeries(Pair.of(loser1, loser1Team), Pair.of(loser2, loser2Team), playoff);
 
-        playoff.getSeries().addAll(List.of(finalSeries, thirdPlaceSeries));
+        // Create final series
+        Series finalSeries = createSeries(Pair.of(winner1, winner1Team), Pair.of(winner2, winner2Team), playoff);
 
-        seriesRepository.saveAll(List.of(finalSeries, thirdPlaceSeries));
+        playoff.getSeries().addAll(List.of(thirdPlaceSeries, finalSeries));
+
+        seriesRepository.saveAll(List.of(thirdPlaceSeries, finalSeries));
         playoffRepository.save(playoff);
     }
 
@@ -207,8 +230,16 @@ public class PlayoffServiceImpl implements PlayoffService
             throw new IllegalStateException("Playoff must have 4 series (2 semifinals, final, third-place)");
         }
 
-        Series finalSeries = seriesList.get(2); // Assuming index order
-        Series thirdPlaceSeries = seriesList.get(3);
+        Player winnerOfFirstSeries = seriesList.get(0).getWinner();
+        Player playerOneOfThirdSeries = seriesList.get(2).getPlayerOne();
+        Player playerTwoOfThirdSeries = seriesList.get(2).getPlayerTwo();
+        if(winnerOfFirstSeries.equals(playerOneOfThirdSeries) || winnerOfFirstSeries.equals(playerTwoOfThirdSeries))
+        {
+            Collections.swap(seriesList, 2, 3);
+        }
+
+        Series thirdPlaceSeries = seriesList.get(2);
+        Series finalSeries = seriesList.get(3);
 
         if(!finalSeries.isCompleted() || !thirdPlaceSeries.isCompleted())
         {
@@ -224,6 +255,7 @@ public class PlayoffServiceImpl implements PlayoffService
         playoff.setWinner(first.getNickName());
         playoff.setSecondPlace(second.getNickName());
         playoff.setThirdPlace(third.getNickName());
+        playoff.setSeries(seriesList);
 
         playoffRepository.save(playoff);
     }

@@ -10,4 +10,6 @@ public interface PlayoffService
     PlayoffResponseDto createPlayoff(PlayoffRequestDto requestDto);
 
     List<PlayoffResponseDto> getAllPlayoffs(int limit, int offset);
+
+    PlayoffResponseDto getPlayoffById(Long playoffId);
 }

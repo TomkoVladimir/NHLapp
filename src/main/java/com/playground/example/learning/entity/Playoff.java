@@ -29,6 +29,7 @@ public class Playoff
     private String title;
 
     @OneToMany(mappedBy = "playoff", cascade = CascadeType.ALL)
+    @OrderColumn(name = "series_order")
     private List<Series> series = new ArrayList<>();
 
     @Column(name = "semi_finals_completed", nullable = false)
