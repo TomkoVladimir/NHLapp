@@ -23,10 +23,10 @@ public class MatchRepositoryTests
     {
         Match match = Match.builder()
             .matchDate("2023-10-01")
-            .htPlayerNickName(new Player(1L, "Home", "Player", "htPlayer"))
-            .atPlayerNickName(new Player(2L, "Away", "Player", "atPlayer"))
-            .homeTeam(new Team(1L, "Home Team"))
-            .awayTeam(new Team(2L, "Away Team"))
+            .htPlayer(new Player(1L, "Home", "Player", "htPlayer"))
+            .atPlayer(new Player(2L, "Away", "Player", "atPlayer"))
+            .homeTeam(new Team(1L, "Home Team", "testSrcToLogo"))
+            .awayTeam(new Team(2L, "Away Team", "testSrcToLogo"))
             .htScore(3)
             .atScore(2)
             .overTime(false)
@@ -41,8 +41,8 @@ public class MatchRepositoryTests
         Assertions.assertNotNull(savedMatch);
         Assertions.assertNotNull(savedMatch.getId());
         Assertions.assertEquals("2023-10-01", savedMatch.getMatchDate());
-        Assertions.assertEquals("htPlayer", savedMatch.getHtPlayerNickName().getNickName());
-        Assertions.assertEquals("atPlayer", savedMatch.getAtPlayerNickName().getNickName());
+        Assertions.assertEquals("htPlayer", savedMatch.getHtPlayer().getNickName());
+        Assertions.assertEquals("atPlayer", savedMatch.getAtPlayer().getNickName());
         Assertions.assertEquals("Home Team", savedMatch.getHomeTeam().getName());
         Assertions.assertEquals("Away Team", savedMatch.getAwayTeam().getName());
         Assertions.assertEquals(3, savedMatch.getHtScore());
@@ -59,10 +59,10 @@ public class MatchRepositoryTests
     {
         Match match = Match.builder()
             .matchDate("2023-10-01")
-            .htPlayerNickName(new Player(1L, "Home", "Player", "htPlayer"))
-            .atPlayerNickName(new Player(2L, "Away", "Player", "atPlayer"))
-            .homeTeam(new Team(1L, "Home Team"))
-            .awayTeam(new Team(2L, "Away Team"))
+            .htPlayer(new Player(1L, "Home", "Player", "htPlayer"))
+            .atPlayer(new Player(2L, "Away", "Player", "atPlayer"))
+            .homeTeam(new Team(1L, "Home Team", "testSrcToLogo"))
+            .awayTeam(new Team(2L, "Away Team", "testSrcToLogo"))
             .htScore(3)
             .atScore(2)
             .overTime(true)
