@@ -199,7 +199,7 @@ public class MatchServiceImpl implements MatchesService
 
         if(match.getIsFinished())
         {
-            throw new InvalidMatchDataException("Match is already finished.");
+            revertMatchStats(match);
         }
 
         homePlayerStats.setMatchesPlayed(homePlayerStats.getMatchesPlayed() + 1);
@@ -264,6 +264,42 @@ public class MatchServiceImpl implements MatchesService
         eventPublisher.publishEvent(new MatchFinishedEvent(this, match));
 
         return MatchMapper.toResponseDto(match);
+    }
+
+    private void revertMatchStats(Match match) {
+        PlayerStats homeStats = playerStatsRepository.findByPlayerNickName(match.getHtPlayer().getNickName()).orElseThrow();
+        PlayerStats awayStats = playerStatsRepository.findByPlayerNickName(match.getAtPlayer().getNickName()).orElseThrow();
+
+        homeStats.setMatchesPlayed(homeStats.getMatchesPlayed() - 1);
+        awayStats.setMatchesPlayed(awayStats.getMatchesPlayed() - 1);
+        homeStats.setScoredGoals(homeStats.getScoredGoals() - match.getHtScore());
+        homeStats.setConcededGoals(homeStats.getConcededGoals() - match.getAtScore());
+        awayStats.setScoredGoals(awayStats.getScoredGoals() - match.getAtScore());
+        awayStats.setConcededGoals(awayStats.getConcededGoals() - match.getHtScore());
+
+        homeStats.setPoints(homeStats.getPoints() - match.getHtPoints());
+        awayStats.setPoints(awayStats.getPoints() - match.getAtPoints());
+
+        if (match.getOverTime()) {
+            if (match.getHtPoints() > match.getAtPoints()) {
+                homeStats.setExtraTimeWins(homeStats.getExtraTimeWins() - 1);
+                awayStats.setExtraTimeLosses(awayStats.getExtraTimeLosses() - 1);
+            } else {
+                awayStats.setExtraTimeWins(awayStats.getExtraTimeWins() - 1);
+                homeStats.setExtraTimeLosses(homeStats.getExtraTimeLosses() - 1);
+            }
+        } else {
+            if (match.getHtPoints() > match.getAtPoints()) {
+                homeStats.setWins(homeStats.getWins() - 1);
+                awayStats.setLosses(awayStats.getLosses() - 1);
+            } else {
+                awayStats.setWins(awayStats.getWins() - 1);
+                homeStats.setLosses(homeStats.getLosses() - 1);
+            }
+        }
+
+        playerStatsRepository.save(homeStats);
+        playerStatsRepository.save(awayStats);
     }
 
     public List<MatchResponseDto> getAllMatches(int limit, int offset) {
