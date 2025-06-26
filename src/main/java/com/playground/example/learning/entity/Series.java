@@ -18,8 +18,13 @@ import java.util.List;
 @Table(name = "series")
 public class Series
 {
+    @SequenceGenerator(
+        name = "series_seq",
+        sequenceName = "series_seq", // Name of DB sequence
+        allocationSize = 1
+    )
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "series_seq")
     private Long id;
 
     @Column(name = "created_at", nullable = false, updatable = false)
