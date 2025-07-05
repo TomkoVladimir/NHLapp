@@ -21,6 +21,8 @@ public class SeriesResponseDto {
     private String playerTwoNickName;
     private Team teamOneName;
     private Team teamTwoName;
+    private int playerOneWins;
+    private int playerTwoWins;
     private String winner;
     private Long playoffId; // Optional, can be null
     private List<Long> matchIds; // Matches created at series creation

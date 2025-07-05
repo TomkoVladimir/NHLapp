@@ -14,6 +14,8 @@ public class SeriesMapper
         dto.setPlayerTwoNickName(series.getPlayerTwo().getNickName());
         dto.setTeamOneName(series.getTeamOne());
         dto.setTeamTwoName(series.getTeamTwo());
+        dto.setPlayerOneWins(series.getPlayerOneWins());
+        dto.setPlayerTwoWins(series.getPlayerTwoWins());
         dto.setWinner(series.getWinner() != null ? series.getWinner().getNickName() : null);
         dto.setMatchIds(series.getMatches().stream()
                 .map(Match::getId)

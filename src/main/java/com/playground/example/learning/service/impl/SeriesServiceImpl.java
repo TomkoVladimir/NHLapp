@@ -58,6 +58,8 @@ public class SeriesServiceImpl implements SeriesService
         series.setPlayerTwo(playerTwo);
         series.setTeamOne(teamOne);
         series.setTeamTwo(teamTwo);
+        series.setPlayerOneWins(0);
+        series.setPlayerTwoWins(0);
         series.setCompleted(false);
         seriesRepository.save(series);
 
@@ -74,6 +76,8 @@ public class SeriesServiceImpl implements SeriesService
             playerTwo.getNickName(),
             teamOne,
             teamTwo,
+            series.getPlayerOneWins(),
+            series.getPlayerTwoWins(),
             null,
             series.getPlayoff() != null ? series.getPlayoff().getId() : null,
             matchIds, // Optional playoff ID
