@@ -20,9 +20,6 @@ bin/
 # Environment variables
 .env
 
-# Ignore Spring Boot config files
-src/main/resources/application.properties
-
 ### IntelliJ IDEA ###
 .idea
 *.iws
