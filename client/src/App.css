@@ -1,0 +1,394 @@
+/* Validation Pop UP */
+.validation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* dark background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.validation-modal {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+/* Homepage */
+.homepage-bg {
+    background-image: url('assets/homeBg.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    width: 100%;
+    position: relative;
+}
+
+.topPlayers {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    color: white;
+    max-width: 300px;
+}
+
+.logo {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: auto
+}
+
+.email-paragraph {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    color: white;
+    padding: 20px;
+    font-size: 1.2rem;
+    width: 300px;
+}
+
+.table-width-responsive {
+    overflow-x: auto;
+    width: 100%;
+    max-width: 90vw;
+    z-index: 1;
+}
+
+/* Matches */
+.overall-bg {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.overall-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('assets/overallpageBg.jpg');
+    background-size: cover;
+    z-index: 0;
+}
+
+.overall-bg > * {
+    position: relative;
+    z-index: 1; /* Ensures content stays above the background image */
+}
+
+.custom-striped tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.1); /* or any subtle color */
+}
+
+/* Stats */
+.stats-bg {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.stats-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url('assets/statsBg.jpg');
+    background-size: cover;
+    z-index: 0;
+}
+
+.stats-bg > * {
+    position: relative;
+    z-index: 1; /* Ensures content stays above the background image */
+}
+
+/* Series */
+.series-bg {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.series-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('assets/seriesBg.jpg');
+    background-size: cover;
+    z-index: 0;
+}
+
+.series-bg > * {
+    position: relative;
+    z-index: 1; /* Ensures content stays above the background image */
+}
+
+.responsive-width-series {
+    width: 100%;
+}
+
+.series-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Playoffs */
+.playoff-bg {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.playoff-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('assets/playoffBg.jpg');
+    background-size: cover;
+    z-index: 0;
+}
+
+.playoff-bg > * {
+    position: relative;
+    z-index: 1; /* Ensures content stays above the background image */
+}
+
+/* Semifinals */
+.semifinals {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+.finals {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+/* Teams */
+.teams-bg {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.teams-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('assets/teamsBg.jpg');
+    background-size: cover;
+    z-index: 0;
+}
+
+.teams-bg > * {
+    position: relative;
+    z-index: 1; /* Ensures content stays above the background image */
+}
+
+/* Players */
+.add-player-bg {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.add-player-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('assets/addNewPlayerBg.jpg');
+    background-size: cover;
+    z-index: 0;
+}
+
+.add-player-bg > * {
+    position: relative;
+    z-index: 1; /* Ensures content stays above the background image */
+}
+
+.responsive-width-addPlayer {
+    width: 100%;
+}
+
+/* Navbar */
+.navbar {
+    display: none;
+}
+
+.navbar-container {
+    position: relative;
+    width: 100%;
+}
+
+.navbar-top {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 50px;
+}
+
+.fullscreen-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(33, 37, 41, 0.95); /* dark bg with transparency */
+    color: white;
+    z-index: 1050;
+}
+
+.fullscreen-menu a {
+    color: white;
+    text-decoration: none;
+    margin: 10px 0;
+}
+
+.fullscreen-menu a:hover {
+    text-decoration: underline;
+}
+
+/* General Styles */
+.w-score {
+    white-space: nowrap;
+    text-align: center;
+}
+
+.responsive-width {
+    width: 100%;
+}
+
+.sidebar {
+    width: 140px;
+    position: relative;
+    z-index: 1;
+}
+
+.main-content {
+    padding-left: 250px;
+}
+
+@media (min-width: 768px) {
+    .responsive-width {
+        width: 50%;
+    }
+
+    .responsive-width-addPlayer {
+        width: 35%;
+    }
+}
+
+@media (min-width: 768px) {
+    .responsive-width-addPlayer {
+        width: 50%;
+    }
+
+    .responsive-width-series {
+        width: 500px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .responsive-width-addPlayer {
+        width: 30%;
+    }
+}
+
+@media (max-width: 1600px) {
+
+    .semifinals {
+        flex-direction: column; /* Stack semifinals vertically on smaller screens */
+        align-items: center;
+    }
+
+    .series-details {
+        flex-direction: column; /* Stack semifinals vertically on smaller screens */
+        align-items: center;
+    }
+}
+
+@media (max-width: 1100px) {
+    .sidebar {
+        display: none !important; /* Hide sidebar on smaller screens */
+    }
+
+    .navbar {
+        display: block !important; /* Show navbar on smaller screens */
+    }
+
+    .homepage-bg {
+        height: 1000px; /* Allow height to adjust based on content */
+    }
+
+    .logo {
+        width: 200px;
+        height: auto;
+        top: 20px;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        margin-right: 0 !important;
+    }
+
+    .topPlayers {
+        left: 50%;
+        bottom: 200px;
+        transform: translateX(-50%);
+        width: 90%; /* Optional: ensure it doesn't overflow */
+        margin-left: 0 !important;
+    }
+
+    .email-paragraph {
+        position: absolute; /* or fixed */
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1rem;
+        text-align: center;
+        margin-top: 20px;
+        width: 90%;
+    }
+
+}
