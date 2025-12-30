@@ -38,3 +38,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Generated OpenAPI documentation
+swagger.json
